@@ -34,6 +34,18 @@ describe('Cache', function() {
             assert.throws(() => cache.get(key), Error)
         });
     });
+    describe('#expiry', () => {
+        it("should expire item", (done) => {
+            const key = "foo"
+            assert.ok(cache.put(key, 2))
+            setTimeout(() => {
+                assert.equal(cache.get(key), 2)
+                assert.throws(() => cache.get(key), Error)
+                done();
+            }, 1000)
+
+        })
+    });
     
 
 });
