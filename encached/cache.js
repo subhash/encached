@@ -4,7 +4,7 @@ function get(key) {
     if (cache.has(key)) {
         return cache.get(key)
     } else {
-        throw new Error(`Missing key .${key}.`)
+        throw new Error(`Missing key ${key}`)
     }
 }
 
@@ -17,4 +17,12 @@ function put(key, value) {
     }
 }
 
-module.exports = { get, put }
+function evict(key) {
+    if (cache.has(key)) {
+        return cache.delete(key)
+    } else {
+        throw new Error(`Missing key ${key}`)
+    }
+}
+
+module.exports = { get, put, evict }
