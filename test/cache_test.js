@@ -1,6 +1,6 @@
 var assert = require('assert');
 describe('Cache', function() {
-    const cache = require('../encached/cache')
+    const { cache } = require('../encached/cache')
     const items = {
         "item1": 2,
         "item2": "abc",
@@ -37,7 +37,7 @@ describe('Cache', function() {
     describe('#expiry', () => {
         it("should expire item", (done) => {
             const key = "foo"
-            assert.ok(cache.put(key, 2))
+            assert.ok(cache.put(key, 2, 500))
             setTimeout(() => {
                 assert.equal(cache.get(key), 2)
                 assert.throws(() => cache.get(key), Error)
