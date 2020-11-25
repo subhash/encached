@@ -9,9 +9,11 @@ server.use(bodyParser.json())
 
 const fetch = require('./encached/fetch')
 const add = require('./encached/add')
+const remove = require('./encached/remove')
 
 server.get('/encached/:key', fetch)
 server.put('/encached/:key', add)
+server.delete('/encached/:key', remove)
 
 server.listen(port, () => console.log(`Server running at ${port}`))
 

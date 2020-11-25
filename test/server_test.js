@@ -25,3 +25,16 @@ describe('PUT /encached/:key', () => {
         assert.equal(res2.text, 2)
     });
 })
+
+describe('DELETE /encached/:key', () => {
+    it('should remove an item', async () => {
+        const res = await request(server)
+            .delete(`/encached/goo`)
+        assert.equal(res.statusCode, 200)
+        
+        const res2 = await request(server)
+            .get(`/encached/goo`)
+        assert.equal(res2.statusCode, 400)
+        assert.equal(res2.text, "Missing key goo")
+    });
+})
