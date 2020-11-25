@@ -4,6 +4,25 @@ class Cache {
     constructor() {
         this.cache = new Map()
     }
+
+    static sizeOf(obj) {
+        if (obj) {
+            switch(typeof obj) {
+                case 'number': return 8
+                case 'string': return obj.length * 2
+                case 'boolean': return 4
+                case 'object':
+                    if (Array.isArray(obj)) {
+                        return obj.reduce((acc, e) => acc + this.sizeOf(e), 0)
+                    }
+                    for (const k in obj) {
+                        return this.sizeOf(k) + this.sizeOf(obj[k])
+                    }
+            }
+        } else {
+            return 0
+        }
+    }
     
     get(key) {
         if (this.cache.has(key)) {

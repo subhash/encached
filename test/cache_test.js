@@ -1,6 +1,6 @@
 var assert = require('assert');
 describe('Cache', function() {
-    const { cache } = require('../encached/cache')
+    const { cache, Cache } = require('../encached/cache')
     const items = {
         "item1": 2,
         "item2": "abc",
@@ -45,6 +45,15 @@ describe('Cache', function() {
             }, 1000)
 
         })
+    });
+    describe('#sizeOf', () => {
+        it("should return correct size of objects", () => {
+            assert.equal(Cache.sizeOf('foo'), 6)
+            assert.equal(Cache.sizeOf(34), 8)
+            assert.equal(Cache.sizeOf(true), 4)
+            assert.equal(Cache.sizeOf([34, true]), 12)
+            assert.equal(Cache.sizeOf({"foo": [34, true]}), 18)
+        });
     });
     
 
