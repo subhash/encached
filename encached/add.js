@@ -1,8 +1,12 @@
 const { cache } = require('./cache')
 
 module.exports = (req, resp) => {
-    const { query, body } = req
-    const { key } = { ...query, ...body }
+    const { params, body } = req
+    const { key } = params 
     const { value } = body
-    resp.json(cache.put(key, value))
+    try {
+        resp.json(cache.put(key, value))
+    } catch(e) {
+        resp.status(400).send(e.message)
+    }
 }

@@ -10,8 +10,8 @@ server.use(bodyParser.json())
 const fetch = require('./encached/fetch')
 const add = require('./encached/add')
 
-server.get('/encached/fetch', fetch)
-server.post('/encached/add', add)
+server.get('/encached/:key', fetch)
+server.put('/encached/:key', add)
 
 server.listen(port, () => console.log(`Server running at ${port}`))
 
