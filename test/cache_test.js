@@ -57,14 +57,18 @@ describe('Cache', function() {
     });
     describe('#LRU', () => {
         it("should evict LRU if mem exceeds", () => {
-            const smallCache = new Cache(40)
-            // Memory - 20
-            assert.ok(smallCache.put('a', 3))
-            assert.equal(smallCache.get('a'), 3)
-            // Memory = 18
-            assert.ok(smallCache.put('b', 'foo'))
-            // Evicted
-            assert.throws(() => smallCache.get('a'), Error)
+            const smallCache = new Cache(80)
+            assert.ok(smallCache.put('a', 1))
+            assert.ok(smallCache.put('b', 2))
+            assert.ok(smallCache.put('c', 3))
+            
+            assert.ok(smallCache.get('a'), 1)
+            assert.ok(smallCache.get('c'), 3)
+            
+            // LRU kicks in
+            assert.ok(smallCache.put('d', 4))
+            // b gets Evicted
+            assert.throws(() => smallCache.get('b'), Error)
         });
     });
     

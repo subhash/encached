@@ -33,8 +33,7 @@ class Cache {
             if (expiry <= Date.now()) {
                 this.evict(key)
             } else {
-                this.LRU.delete(key)
-                this.LRU.set(key, key)
+                this.recordLRU(key)
             }
             return value
         } else {
@@ -46,6 +45,7 @@ class Cache {
         if (value) {
             const expiry = Date.now() + expires
             this.cache.set(key, { value, expiry })
+            this.recordLRU(key)
             this.memSize += Cache.sizeOf(key) + Cache.sizeOf( { value, expiry } )
             if (this.memSize > 0.9 * this.maxSize) {
                 this.evictLRU()
@@ -56,13 +56,25 @@ class Cache {
         }
     }
 
+    recordLRU(key) {
+        this.LRU.delete(key)
+        this.LRU.set(key, key)
+
+    }
+
     evictLRU() {
         const key = this.LRU.keys().next().value
-        this.evict(key)
+        if (key) {
+            this.evict(key)
+        } else {
+            throw new Error(`Memonry exceeded`)
+        }
     }
 
     evict(key) {
         if (this.cache.has(key)) {
+            const { value, expiry } = this.cache.get(key)
+            this.memSize -= Cache.sizeOf(key) + Cache.sizeOf( { value, expiry } )
             this.LRU.delete(key)
             return this.cache.delete(key)
         } else {
