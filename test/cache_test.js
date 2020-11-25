@@ -55,6 +55,18 @@ describe('Cache', function() {
             assert.equal(Cache.sizeOf({"foo": [34, true]}), 18)
         });
     });
+    describe('#LRU', () => {
+        it("should evict LRU if mem exceeds", () => {
+            const smallCache = new Cache(40)
+            // Memory - 20
+            assert.ok(smallCache.put('a', 3))
+            assert.equal(smallCache.get('a'), 3)
+            // Memory = 18
+            assert.ok(smallCache.put('b', 'foo'))
+            // Evicted
+            assert.throws(() => smallCache.get('a'), Error)
+        });
+    });
     
 
 });

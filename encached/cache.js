@@ -1,8 +1,11 @@
 
 class Cache {
 
-    constructor() {
+    constructor(maxSize=1e6) {
         this.cache = new Map()
+        this.LRU = new Map()
+        this.memSize = 0
+        this.maxSize = maxSize
     }
 
     static sizeOf(obj) {
@@ -29,6 +32,9 @@ class Cache {
             const { value, expiry } = this.cache.get(key)
             if (expiry <= Date.now()) {
                 this.evict(key)
+            } else {
+                this.LRU.delete(key)
+                this.LRU.set(key, key)
             }
             return value
         } else {
@@ -40,14 +46,24 @@ class Cache {
         if (value) {
             const expiry = Date.now() + expires
             this.cache.set(key, { value, expiry })
+            this.memSize += Cache.sizeOf(key) + Cache.sizeOf( { value, expiry } )
+            if (this.memSize > 0.9 * this.maxSize) {
+                this.evictLRU()
+            }
             return { key, value }
         } else {
             throw new Error(`No value for key ${key}`)
         }
     }
 
+    evictLRU() {
+        const key = this.LRU.keys().next().value
+        this.evict(key)
+    }
+
     evict(key) {
         if (this.cache.has(key)) {
+            this.LRU.delete(key)
             return this.cache.delete(key)
         } else {
             throw new Error(`Missing key ${key}`)
